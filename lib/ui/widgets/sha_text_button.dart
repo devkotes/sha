@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
 
-class CustomButton extends StatelessWidget {
+class ShaTextButton extends StatelessWidget {
   final String text;
   final double width;
   final double height;
   final Function() onPressed;
   final EdgeInsetsGeometry margin;
-  const CustomButton({
+  const ShaTextButton({
     super.key,
     required this.text,
     required this.onPressed,
@@ -25,16 +25,15 @@ class CustomButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: kPurpleColor,
+          backgroundColor: kTransparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(56),
           ),
         ),
         child: Text(
           text,
-          style: whiteTextStyle.copyWith(
+          style: greySecondTextStyle.copyWith(
             fontSize: 16,
-            fontWeight: semiBold,
           ),
         ),
       ),

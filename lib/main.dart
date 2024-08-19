@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sha/ui/pages/splash_page.dart';
+
+import 'shared/routes.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +9,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashPage(),
+      routes: routes(context),
     );
   }
 }

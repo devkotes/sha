@@ -13,8 +13,11 @@ Color kGreySecondColor = const Color(0xff696B76);
 Color kBlueColor = const Color(0xff53C1F9);
 Color kPurpleColor = const Color(0xff5142E6);
 Color kGreenColor = const Color(0xff22B07D);
-Color kRedColor = const Color(0xffEB70A5);
+Color kRedColor = const Color(0xffFF2566);
 Color kTransparent = Colors.transparent;
+Color kFocusInputColor = const Color(0xff3783FB);
+Color kUnfocusInputColor = const Color(0xffEFEEF1);
+Color kUploadColor = const Color(0xffF1F1F9);
 
 TextStyle blackTextStyle = GoogleFonts.poppins(color: kBlackColor);
 TextStyle whiteTextStyle = GoogleFonts.poppins(color: kWhiteColor);
@@ -23,6 +26,7 @@ TextStyle greySecondTextStyle = GoogleFonts.poppins(color: kGreySecondColor);
 TextStyle greenTextStyle = GoogleFonts.poppins(color: kGreenColor);
 TextStyle redTextStyle = GoogleFonts.poppins(color: kRedColor);
 TextStyle purpleTextStyle = GoogleFonts.poppins(color: kPurpleColor);
+TextStyle blueTextStyle = GoogleFonts.poppins(color: kBlueColor);
 
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;

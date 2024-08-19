@@ -1,8 +1,11 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:sha/models/onboard.dart';
-import 'package:sha/shared/theme.dart';
-import 'package:sha/ui/widgets/custom_button.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:sha/ui/widgets/sha_text_button.dart';
+
+import '../../models/onboard.dart';
+import '../../shared/routes.dart';
+import '../../shared/theme.dart';
+import '../widgets/sha_button.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -118,7 +121,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                   .toList(),
                             ),
                             const Spacer(),
-                            CustomButton(
+                            ShaButton(
                               width: 150,
                               text: 'Continue',
                               onPressed: () {
@@ -129,27 +132,27 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         )
                       : Column(
                           children: [
-                            CustomButton(text: 'Get Started', onPressed: () {}),
-                            Container(
-                              width: double.infinity,
-                              height: 50,
-                              margin: const EdgeInsets.only(top: 20),
-                              child: TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  backgroundColor: kTransparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(56),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Sign In',
-                                  style: greySecondTextStyle.copyWith(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            )
+                            ShaButton(
+                              text: 'Get Started',
+                              margin: const EdgeInsets.only(bottom: 20),
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  signUpRoute,
+                                  (route) => false,
+                                );
+                              },
+                            ),
+                            ShaTextButton(
+                              text: 'Sign In',
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  signInRoute,
+                                  (route) => false,
+                                );
+                              },
+                            ),
                           ],
                         ),
                 ],

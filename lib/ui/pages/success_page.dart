@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 
@@ -46,7 +47,13 @@ class SuccessPage extends StatelessWidget {
               width: 183,
               text: 'Get Started',
               margin: const EdgeInsets.only(bottom: 20),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  overviewRoute,
+                  (route) => false,
+                );
+              },
             ),
           ],
         ),

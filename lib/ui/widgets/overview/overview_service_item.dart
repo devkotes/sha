@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
 
-class ShaServiceItem extends StatelessWidget {
+class OverviewServiceItem extends StatelessWidget {
   final String title;
   final String icon;
   final Function()? onTapped;
-  const ShaServiceItem({
+  const OverviewServiceItem({
     super.key,
     required this.title,
     required this.icon,

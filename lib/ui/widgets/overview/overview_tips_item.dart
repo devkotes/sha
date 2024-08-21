@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ShaTipsItem extends StatelessWidget {
+class OverviewTipsItem extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String url;
-  const ShaTipsItem({
+  const OverviewTipsItem({
     super.key,
     required this.imageUrl,
     required this.title,

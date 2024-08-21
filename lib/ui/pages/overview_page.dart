@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
-import 'package:sha/ui/widgets/overview/sha_service_item.dart';
-import 'package:sha/ui/widgets/overview/sha_tips_item.dart';
-import 'package:sha/ui/widgets/overview/sha_transaction_item.dart';
-import 'package:sha/ui/widgets/overview/sha_user_item.dart';
+import 'package:sha/ui/widgets/overview/overview_service_item.dart';
+import 'package:sha/ui/widgets/overview/overview_tips_item.dart';
+import 'package:sha/ui/widgets/overview/overview_transaction_item.dart';
+import 'package:sha/ui/widgets/overview/overview_user_item.dart';
 
 class OverviewPage extends StatelessWidget {
   const OverviewPage({super.key});
@@ -287,22 +287,22 @@ class _ServiceSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ShaServiceItem(
+              OverviewServiceItem(
                 title: 'Top Up',
                 icon: 'assets/icons/ic_download.png',
                 onTapped: () {},
               ),
-              ShaServiceItem(
+              OverviewServiceItem(
                 title: 'Send',
                 icon: 'assets/icons/ic_send.png',
                 onTapped: () {},
               ),
-              ShaServiceItem(
+              OverviewServiceItem(
                 title: 'Withdraw',
                 icon: 'assets/icons/ic_withdraw.png',
                 onTapped: () {},
               ),
-              ShaServiceItem(
+              OverviewServiceItem(
                 title: 'More',
                 icon: 'assets/icons/ic_more.png',
                 onTapped: () {},
@@ -341,35 +341,35 @@ class _LastTransactionSection extends StatelessWidget {
             ),
             child: const Column(
               children: [
-                ShaTransactionItem(
+                OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_topup.png',
                   title: 'Top Up',
                   subtitle: 'Yesterday',
                   value: '+ 450.000',
                 ),
                 SizedBox(height: 18),
-                ShaTransactionItem(
+                OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_cashback.png',
                   title: 'Cashback',
                   subtitle: 'Sep 11',
                   value: '- 22.000',
                 ),
                 SizedBox(height: 18),
-                ShaTransactionItem(
+                OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_withdraw.png',
                   title: 'Withdraw',
                   subtitle: 'Sep 2',
                   value: '- 5.000',
                 ),
                 SizedBox(height: 18),
-                ShaTransactionItem(
+                OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_transfer.png',
                   title: 'Transfer',
                   subtitle: 'Aug 27',
                   value: '- 124.500',
                 ),
                 SizedBox(height: 18),
-                ShaTransactionItem(
+                OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_electric.png',
                   title: 'Electric',
                   subtitle: 'Feb 18',
@@ -406,19 +406,19 @@ class _SendAgainSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                ShaUserItem(
+                OverviewUserItem(
                   imageUrl: 'assets/images/img_friend_1.png',
                   username: 'yuanita',
                 ),
-                ShaUserItem(
+                OverviewUserItem(
                   imageUrl: 'assets/images/img_friend_2.png',
                   username: 'jani',
                 ),
-                ShaUserItem(
+                OverviewUserItem(
                   imageUrl: 'assets/images/img_friend_3.png',
                   username: 'urip',
                 ),
-                ShaUserItem(
+                OverviewUserItem(
                   imageUrl: 'assets/images/img_friend_4.png',
                   username: 'masa',
                 )
@@ -453,22 +453,22 @@ class _FriendlyTips extends StatelessWidget {
             spacing: 18,
             runSpacing: 18,
             children: [
-              ShaTipsItem(
+              OverviewTipsItem(
                 imageUrl: 'assets/images/img_tips1.png',
                 title: 'Best tips for using a credit card',
                 url: 'https://google.com',
               ),
-              ShaTipsItem(
+              OverviewTipsItem(
                 imageUrl: 'assets/images/img_tips2.png',
                 title: 'Spot the good pie of finance model',
                 url: 'https://google.com',
               ),
-              ShaTipsItem(
+              OverviewTipsItem(
                 imageUrl: 'assets/images/img_tips3.png',
                 title: 'Great hack to get better advices',
                 url: 'https://google.com',
               ),
-              ShaTipsItem(
+              OverviewTipsItem(
                 imageUrl: 'assets/images/img_tips4.png',
                 title: 'Save more penny buy this instead',
                 url: 'https://google.com',

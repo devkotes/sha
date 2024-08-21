@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
 
-class ShaTransactionItem extends StatelessWidget {
+class OverviewTransactionItem extends StatelessWidget {
   final String icon;
   final String title;
   final String subtitle;
   final String value;
-  const ShaTransactionItem({
+  const OverviewTransactionItem({
     super.key,
     required this.icon,
     required this.title,

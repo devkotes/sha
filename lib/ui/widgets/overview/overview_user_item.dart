@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sha/shared/theme.dart';
 
-class ShaUserItem extends StatelessWidget {
+class OverviewUserItem extends StatelessWidget {
   final String imageUrl;
   final String username;
-  const ShaUserItem({
+  const OverviewUserItem({
     super.key,
     required this.imageUrl,
     required this.username,

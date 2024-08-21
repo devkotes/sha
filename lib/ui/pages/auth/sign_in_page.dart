@@ -21,7 +21,6 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kLightBackgroundColor,
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         children: [

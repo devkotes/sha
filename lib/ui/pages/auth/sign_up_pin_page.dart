@@ -17,7 +17,6 @@ class _SignUpPinPageState extends State<SignUpPinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kLightBackgroundColor,
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         children: [

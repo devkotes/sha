@@ -41,3 +41,37 @@ class ShaButton extends StatelessWidget {
     );
   }
 }
+
+class ShaInputButton extends StatelessWidget {
+  final String title;
+  final Function() onTapped;
+  const ShaInputButton({
+    super.key,
+    required this.title,
+    required this.onTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTapped,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: kBlackColor,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: whiteTextStyle.copyWith(
+              fontSize: 22,
+              fontWeight: semiBold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

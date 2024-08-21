@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
-import 'package:sha/ui/pages/success_page.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_text_button.dart';
 
@@ -17,7 +17,6 @@ class _SignUpVerifyPageState extends State<SignUpVerifyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kLightBackgroundColor,
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         children: [
@@ -97,15 +96,10 @@ class _SignUpVerifyPageState extends State<SignUpVerifyPage> {
                 ShaButton(
                   text: 'Continue',
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushNamedAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const SuccessPage(
-                            title: 'Akun Berhasil\nTerdaftar',
-                            subtitle:
-                                'Grow your finance start\ntogether with us',
-                            buttonText: 'Get Started'),
-                      ),
+                      signUpSuccessRoute,
+                      (route) => false,
                     );
                   },
                   margin: const EdgeInsets.only(top: 50 - 16),

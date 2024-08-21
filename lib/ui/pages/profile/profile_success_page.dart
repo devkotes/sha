@@ -3,21 +3,14 @@ import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 
-class SuccessPage extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String buttonText;
-  const SuccessPage({
+class ProfileSuccessPage extends StatelessWidget {
+  const ProfileSuccessPage({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.buttonText,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kLightBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,7 +18,7 @@ class SuccessPage extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(bottom: 26),
               child: Text(
-                title,
+                'Nice Update!',
                 style: blackTextStyle.copyWith(
                   fontSize: 20,
                   fontWeight: semiBold,
@@ -36,7 +29,7 @@ class SuccessPage extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(bottom: 50),
               child: Text(
-                subtitle,
+                'Your data is safe with\nour system',
                 style: greyTextStyle.copyWith(
                   fontSize: 16,
                 ),
@@ -45,7 +38,7 @@ class SuccessPage extends StatelessWidget {
             ),
             ShaButton(
               width: 183,
-              text: 'Get Started',
+              text: 'My Profile',
               margin: const EdgeInsets.only(bottom: 20),
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(

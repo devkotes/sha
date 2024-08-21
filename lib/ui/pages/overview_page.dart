@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/overview/overview_service_item.dart';
 import 'package:sha/ui/widgets/overview/overview_tips_item.dart';
@@ -121,26 +122,31 @@ class _ProfileSection extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            width: 60,
-            height: 60,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/img_profile.png',
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, profileRoute);
+            },
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: AssetImage(
+                    'assets/images/img_profile.png',
+                  ),
                 ),
               ),
-            ),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                width: 14,
-                height: 14,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      'assets/icons/ic_check.png',
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'assets/icons/ic_check.png',
+                      ),
                     ),
                   ),
                 ),

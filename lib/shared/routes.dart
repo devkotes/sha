@@ -12,6 +12,9 @@ import 'package:sha/ui/pages/profile/profile_page.dart';
 import 'package:sha/ui/pages/profile/profile_pin_page.dart';
 import 'package:sha/ui/pages/profile/profile_success_page.dart';
 import 'package:sha/ui/pages/splash_page.dart';
+import 'package:sha/ui/pages/topup/topup_amount_page.dart';
+import 'package:sha/ui/pages/topup/topup_page.dart';
+import 'package:sha/ui/pages/topup/topup_success_page.dart';
 
 const String route = '/';
 const String onboardRoute = '/onboard';
@@ -21,14 +24,15 @@ const String signUpRoute = '/auth/sign-up';
 const String signUpPinRoute = '/auth/sign-up/pin';
 const String signUpVerifyRoute = '/auth/sign-up/verify';
 const String signUpSuccessRoute = '/auth/sign-up/success';
-
 const String overviewRoute = '/overview';
 const String pinRoute = '/pin';
-
 const String profileRoute = '/profile';
 const String profileEditRoute = '/profile/edit';
 const String profilePinRoute = '/profile/pin';
 const String profileSuccessRoute = '/profile/success';
+const String topUpRoute = '/topup';
+const String topUpAmountRoute = '/topup/amount';
+const String topUpSuccessRoute = '/topup/success';
 
 Map<String, WidgetBuilder> routes(BuildContext context) {
   return {
@@ -45,5 +49,8 @@ Map<String, WidgetBuilder> routes(BuildContext context) {
     profileEditRoute: (context) => const ProfileEditPage(),
     profilePinRoute: (context) => const ProfilePinPage(),
     profileSuccessRoute: (context) => const ProfileSuccessPage(),
+    topUpRoute: (context) => const TopUpPage(),
+    topUpAmountRoute: (context) => const TopupAmountPage(),
+    topUpSuccessRoute: (context) => const TopUpSuccessPage(),
   };
 }

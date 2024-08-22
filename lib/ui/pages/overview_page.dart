@@ -296,7 +296,9 @@ class _ServiceSection extends StatelessWidget {
               OverviewServiceItem(
                 title: 'Top Up',
                 icon: 'assets/icons/ic_download.png',
-                onTapped: () {},
+                onTapped: () {
+                  Navigator.pushNamed(context, topUpRoute);
+                },
               ),
               OverviewServiceItem(
                 title: 'Send',

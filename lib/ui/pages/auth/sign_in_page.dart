@@ -73,7 +73,13 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 ShaButton(
                   text: 'Sign In',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      overviewRoute,
+                      (route) => false,
+                    );
+                  },
                 ),
               ],
             ),

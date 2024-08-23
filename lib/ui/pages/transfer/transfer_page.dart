@@ -106,17 +106,17 @@ class _ResultUser extends StatelessWidget {
             ),
           ),
         ),
-        Wrap(
+        const Wrap(
           spacing: 17,
           runSpacing: 17,
           children: [
-            const ResultUserItem(
+            ResultUserItem(
               imageUrl: 'assets/images/img_friend_1.png',
               fullname: 'Yonna Jie',
               username: 'yoenna',
               isVerified: true,
             ),
-            const ResultUserItem(
+            ResultUserItem(
               imageUrl: 'assets/images/img_friend_4.png',
               fullname: 'Yonne Ka',
               username: 'yoenyu',

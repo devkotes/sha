@@ -7,6 +7,7 @@ class ShaInput extends StatelessWidget {
   final String labelText;
   final String hintText;
   final bool obscureText;
+  final bool isShowTitle;
   final TextInputType keyboardType;
   final TextInputAction keyboardAction;
   const ShaInput({
@@ -15,6 +16,7 @@ class ShaInput extends StatelessWidget {
     required this.labelText,
     this.hintText = '',
     this.obscureText = false,
+    this.isShowTitle = true,
     this.keyboardType = TextInputType.text,
     this.keyboardAction = TextInputAction.next,
   });
@@ -24,19 +26,24 @@ class ShaInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            labelText,
-            style: blackTextStyle.copyWith(fontWeight: medium),
+        if (isShowTitle)
+          Container(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              labelText,
+              style: blackTextStyle.copyWith(fontWeight: medium),
+            ),
           ),
-        ),
         TextFormField(
           controller: controller,
           obscureText: obscureText,
+          cursorColor: kBlackColor,
           keyboardType: keyboardType,
           textInputAction: keyboardAction,
+          style: blackTextStyle.copyWith(fontWeight: medium),
           decoration: InputDecoration(
+            hintText: (!isShowTitle) ? labelText : null,
+            hintStyle: greyTextStyle,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(

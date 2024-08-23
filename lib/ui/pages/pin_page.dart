@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 
@@ -18,15 +19,24 @@ class _PinPageState extends State<PinPage> {
         _pinController.text = _pinController.text + number;
       });
     }
-    if (_pinController.text == '123123') {
-      Navigator.pop(context, true);
+
+    if (_pinController.text.length == 6) {
+      if (_pinController.text == '123123') {
+        Navigator.pop(context, true);
+      } else {
+        showCustomSnackbar(
+          context,
+          'PIN yang anda masukkan salah. Silakan coba lagi.',
+        );
+      }
     }
   }
 
   deletePin() {
     if (_pinController.text.isNotEmpty) {
       setState(() {
-      _pinController.text =  _pinController.text.substring(0, _pinController.text.length - 1);
+        _pinController.text =
+            _pinController.text.substring(0, _pinController.text.length - 1);
       });
     }
   }

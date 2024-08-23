@@ -3,14 +3,14 @@ import 'package:sha/shared/theme.dart';
 
 class ShaCard extends StatelessWidget {
   final String imageUrl;
-  final String bankName;
-  final String bankAvailable;
+  final String title;
+  final String subtitle;
   final bool isSelected;
   const ShaCard({
     super.key,
     required this.imageUrl,
-    required this.bankName,
-    required this.bankAvailable,
+    required this.title,
+    required this.subtitle,
     this.isSelected = false,
   });
 
@@ -22,10 +22,7 @@ class ShaCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: kWhiteColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: (isSelected) ? kBlueColor : kTransparent,
-          width: 2,
-        ),
+        border: (isSelected) ? Border.all(color: kBlueColor, width: 2) : null,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,7 +34,7 @@ class ShaCard extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(bottom: 4),
                 child: Text(
-                  bankName,
+                  title,
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: medium,
@@ -45,7 +42,7 @@ class ShaCard extends StatelessWidget {
                 ),
               ),
               Text(
-                bankAvailable,
+                subtitle,
                 style: greyTextStyle.copyWith(fontSize: 12),
               ),
             ],

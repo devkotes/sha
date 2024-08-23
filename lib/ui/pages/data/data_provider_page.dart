@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_card.dart';
 
-class TopUpPage extends StatelessWidget {
-  const TopUpPage({super.key});
+class DataProviderPage extends StatelessWidget {
+  const DataProviderPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Top Up'),
+        title: const Text('Beli Data'),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -19,14 +20,14 @@ class TopUpPage extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          const _WalletSection(
+          _WalletSection(
             walletNumber: '8008 2208 1996',
-            walletName: 'Kyunzi Permana',
+            walletName: 'Balance: ${formatCurrency(12000000)}',
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 14),
             child: Text(
-              'Select Bank',
+              'Select Provider',
               style: blackTextStyle.copyWith(
                 fontSize: 16,
                 fontWeight: semiBold,
@@ -34,25 +35,20 @@ class TopUpPage extends StatelessWidget {
             ),
           ),
           const ShaCard(
-            imageUrl: 'assets/images/img_bca.png',
-            title: 'BANK BCA',
-            subtitle: '50 mins',
+            imageUrl: 'assets/images/img_telkomsel.png',
+            title: 'Telkomsel',
+            subtitle: 'Available',
             isSelected: true,
           ),
           const ShaCard(
-            imageUrl: 'assets/images/img_bni.png',
-            title: 'BANK BNI',
-            subtitle: '50 mins',
+            imageUrl: 'assets/images/img_indosat.png',
+            title: 'Indosat',
+            subtitle: 'Available',
           ),
           const ShaCard(
-            imageUrl: 'assets/images/img_mandiri.png',
-            title: 'BANK Mandiri',
-            subtitle: '50 mins',
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_ocbc.png',
-            title: 'BANK OCBC',
-            subtitle: '50 mins',
+            imageUrl: 'assets/images/img_singtel.png',
+            title: 'Singtel ID',
+            subtitle: 'Available',
           ),
           const SizedBox(
             height: 50,
@@ -60,7 +56,7 @@ class TopUpPage extends StatelessWidget {
           ShaButton(
             text: 'Continue',
             onPressed: () {
-              Navigator.pushNamed(context, topUpAmountRoute);
+              Navigator.pushNamed(context, dataPackageRoute);
             },
           ),
           const SizedBox(

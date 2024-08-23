@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/widgets/overview/overview_more_item.dart';
 import 'package:sha/ui/widgets/overview/overview_service_item.dart';
 import 'package:sha/ui/widgets/overview/overview_tips_item.dart';
 import 'package:sha/ui/widgets/overview/overview_transaction_item.dart';
@@ -207,7 +209,7 @@ class _WalletSection extends StatelessWidget {
             style: whiteTextStyle,
           ),
           Text(
-            'Rp. 12.500',
+            formatCurrency(5000000),
             style: whiteTextStyle.copyWith(
               fontSize: 24,
               fontWeight: semiBold,
@@ -249,7 +251,7 @@ class _LevelSection extends StatelessWidget {
                 ),
               ),
               Text(
-                'of Rp. 20.000',
+                ' of ${formatCurrency(200000)}',
                 style: blackTextStyle.copyWith(
                   fontWeight: semiBold,
                 ),
@@ -303,7 +305,9 @@ class _ServiceSection extends StatelessWidget {
               OverviewServiceItem(
                 title: 'Send',
                 icon: 'assets/icons/ic_send.png',
-                onTapped: () {},
+                onTapped: () {
+                  Navigator.pushNamed(context, transferRoute);
+                },
               ),
               OverviewServiceItem(
                 title: 'Withdraw',
@@ -313,7 +317,12 @@ class _ServiceSection extends StatelessWidget {
               OverviewServiceItem(
                 title: 'More',
                 icon: 'assets/icons/ic_more.png',
-                onTapped: () {},
+                onTapped: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const _MoreDialog(),
+                  );
+                },
               ),
             ],
           ),
@@ -347,41 +356,41 @@ class _LastTransactionSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               color: kWhiteColor,
             ),
-            child: const Column(
+            child: Column(
               children: [
                 OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_topup.png',
                   title: 'Top Up',
                   subtitle: 'Yesterday',
-                  value: '+ 450.000',
+                  value: formatCurrency(450000, symbol: '+ '),
                 ),
                 SizedBox(height: 18),
                 OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_cashback.png',
                   title: 'Cashback',
                   subtitle: 'Sep 11',
-                  value: '- 22.000',
+                  value: formatCurrency(220000, symbol: '- '),
                 ),
                 SizedBox(height: 18),
                 OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_withdraw.png',
                   title: 'Withdraw',
                   subtitle: 'Sep 2',
-                  value: '- 5.000',
+                  value: formatCurrency(4000, symbol: '+ '),
                 ),
                 SizedBox(height: 18),
                 OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_transfer.png',
                   title: 'Transfer',
                   subtitle: 'Aug 27',
-                  value: '- 124.500',
+                  value: formatCurrency(124000, symbol: '- '),
                 ),
                 SizedBox(height: 18),
                 OverviewTransactionItem(
                   icon: 'assets/icons/ic_type_electric.png',
                   title: 'Electric',
                   subtitle: 'Feb 18',
-                  value: '- 12.300.000',
+                  value: formatCurrency(1230000, symbol: '+ '),
                 ),
               ],
             ),
@@ -457,33 +466,113 @@ class _FriendlyTips extends StatelessWidget {
                   blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
             ),
           ),
-          const Wrap(
-            spacing: 18,
-            runSpacing: 18,
-            children: [
-              OverviewTipsItem(
-                imageUrl: 'assets/images/img_tips1.png',
-                title: 'Best tips for using a credit card',
-                url: 'https://google.com',
-              ),
-              OverviewTipsItem(
-                imageUrl: 'assets/images/img_tips2.png',
-                title: 'Spot the good pie of finance model',
-                url: 'https://google.com',
-              ),
-              OverviewTipsItem(
-                imageUrl: 'assets/images/img_tips3.png',
-                title: 'Great hack to get better advices',
-                url: 'https://google.com',
-              ),
-              OverviewTipsItem(
-                imageUrl: 'assets/images/img_tips4.png',
-                title: 'Save more penny buy this instead',
-                url: 'https://google.com',
-              )
-            ],
+          const Center(
+            child: Wrap(
+              spacing: 18,
+              runSpacing: 18,
+              children: [
+                OverviewTipsItem(
+                  imageUrl: 'assets/images/img_tips1.png',
+                  title: 'Best tips for using a credit card',
+                  url: 'https://google.com',
+                ),
+                OverviewTipsItem(
+                  imageUrl: 'assets/images/img_tips2.png',
+                  title: 'Spot the good pie of finance model',
+                  url: 'https://google.com',
+                ),
+                OverviewTipsItem(
+                  imageUrl: 'assets/images/img_tips3.png',
+                  title: 'Great hack to get better advices',
+                  url: 'https://google.com',
+                ),
+                OverviewTipsItem(
+                  imageUrl: 'assets/images/img_tips4.png',
+                  title: 'Save more penny buy this instead',
+                  url: 'https://google.com',
+                )
+              ],
+            ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class _MoreDialog extends StatelessWidget {
+  const _MoreDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: kTransparent,
+      insetPadding: EdgeInsets.zero,
+      alignment: Alignment.bottomCenter,
+      content: Container(
+        height: 326,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+          color: kLightBackgroundColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 13),
+              child: Text(
+                'Do More With Us',
+                style: blackTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: semiBold,
+                ),
+              ),
+            ),
+            Center(
+              child: Wrap(
+                spacing: 29,
+                runSpacing: 29,
+                children: [
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_dana.png',
+                    title: 'Dana',
+                    onTapped: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, dataProviderRoute);
+                    },
+                  ),
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_water.png',
+                    title: 'Water',
+                    onTapped: () {},
+                  ),
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_stream.png',
+                    title: 'Stream',
+                    onTapped: () {},
+                  ),
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_movie.png',
+                    title: 'Movie',
+                    onTapped: () {},
+                  ),
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_food.png',
+                    title: 'Food',
+                    onTapped: () {},
+                  ),
+                  OverviewMoreItem(
+                    imageUrl: 'assets/icons/ic_travel.png',
+                    title: 'Travel',
+                    onTapped: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

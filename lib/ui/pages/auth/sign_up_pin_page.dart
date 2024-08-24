@@ -1,11 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:sha/shared/routes.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sha/models/form/form_sign_up_model.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/pages/auth/sign_up_verify_page.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_input.dart';
 
 class SignUpPinPage extends StatefulWidget {
-  const SignUpPinPage({super.key});
+  final FormSignUpModel data;
+  const SignUpPinPage({
+    super.key,
+    required this.data,
+  });
 
   @override
   State<SignUpPinPage> createState() => _SignUpPinPageState();
@@ -13,6 +23,15 @@ class SignUpPinPage extends StatefulWidget {
 
 class _SignUpPinPageState extends State<SignUpPinPage> {
   final TextEditingController pinController = TextEditingController(text: '');
+
+  XFile? selectedImage;
+
+  bool validate() {
+    if (pinController.text.length != 6) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +53,10 @@ class _SignUpPinPageState extends State<SignUpPinPage> {
           ),
           Text(
             'Join Us to Unlock\nYour Growth',
-            style: blackTextStyle.copyWith(fontSize: 20, fontWeight: semiBold),
+            style: blackTextStyle.copyWith(
+              fontSize: 20,
+              fontWeight: semiBold,
+            ),
           ),
           Container(
             margin: const EdgeInsets.only(top: 30, bottom: 50),
@@ -46,28 +68,44 @@ class _SignUpPinPageState extends State<SignUpPinPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: kUploadColor,
-                    ),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/icons/ic_upload.png',
+                GestureDetector(
+                  onTap: () async {
+                    final image = await selectImage();
+                    setState(() {
+                      selectedImage = image;
+                    });
+                  },
+                  child: Center(
+                    child: (selectedImage != null)
+                        ? Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: FileImage(
+                                  File(selectedImage!.path),
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: kUploadColor,
+                            ),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                'assets/icons/ic_upload.png',
+                                width: 32,
+                                height: 32,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
                 const SizedBox(
@@ -77,7 +115,7 @@ class _SignUpPinPageState extends State<SignUpPinPage> {
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(bottom: 30),
                   child: Text(
-                    'Kyunzi Permana',
+                    '${widget.data.name}',
                     style: blackTextStyle.copyWith(
                       fontSize: 18,
                       fontWeight: medium,
@@ -89,11 +127,28 @@ class _SignUpPinPageState extends State<SignUpPinPage> {
                 ShaInput(
                   controller: pinController,
                   labelText: 'Set PIN (6 digit number)',
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
                 ),
                 ShaButton(
                   text: 'Continue',
                   onPressed: () {
-                    Navigator.pushNamed(context, signUpVerifyRoute);
+                    if (validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpVerifyPage(
+                            data: widget.data.copyWith(
+                                pin: pinController.text.trim(),
+                                profilePicture: (selectedImage == null)
+                                    ? null
+                                    : 'data:image/png;base64,${base64Encode(File(selectedImage!.path).readAsBytesSync())}'),
+                          ),
+                        ),
+                      );
+                    } else {
+                      showCustomSnackbar(context, 'PIN harus 6 karakter');
+                    }
                   },
                   margin: const EdgeInsets.only(top: 14),
                 ),

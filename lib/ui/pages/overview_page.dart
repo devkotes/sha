@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sha/blocs/auth/auth_bloc.dart';
 import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
@@ -105,58 +107,70 @@ class _ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 40),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Howdy,',
-                style: greySecondTextStyle.copyWith(fontSize: 16),
-              ),
-              Text(
-                'shaynahan',
-                style:
-                    blackTextStyle.copyWith(fontSize: 20, fontWeight: semiBold),
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, profileRoute);
-            },
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/images/img_profile.png',
-                  ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthSuccess) {
+          return Container(
+            margin: const EdgeInsets.only(top: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Howdy,',
+                      style: greySecondTextStyle.copyWith(fontSize: 16),
+                    ),
+                    Text(
+                      '${state.user.username}',
+                      style: blackTextStyle.copyWith(
+                          fontSize: 20, fontWeight: semiBold),
+                    ),
+                  ],
                 ),
-              ),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  width: 14,
-                  height: 14,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        'assets/icons/ic_check.png',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, profileRoute);
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: (state.user.profilePicture == null)
+                            ? const AssetImage(
+                                'assets/images/img_profile.png',
+                              )
+                            : NetworkImage(state.user.profilePicture!),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: (state.user.verified == 1)
+                        ? Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/icons/ic_check.png',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : null,
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        return Container();
+      },
     );
   }
 }
@@ -166,57 +180,64 @@ class _WalletSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 30),
-      width: double.infinity,
-      height: 220,
-      padding: const EdgeInsets.all(30),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        image: const DecorationImage(
-          image: AssetImage(
-            'assets/images/img_wallet.png',
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 28),
-            child: Text(
-              'Shayna Hanna',
-              style: whiteTextStyle.copyWith(
-                fontSize: 18,
-                fontWeight: medium,
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthSuccess) {
+          return Container(
+            margin: const EdgeInsets.only(top: 30),
+            width: double.infinity,
+            height: 220,
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              image: const DecorationImage(
+                image: AssetImage(
+                  'assets/images/img_wallet.png',
+                ),
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 25),
-            child: Text(
-              '**** **** **** 1280',
-              style: whiteTextStyle.copyWith(
-                fontSize: 18,
-                fontWeight: medium,
-                letterSpacing: 8,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 28),
+                  child: Text(
+                    '${state.user.name}',
+                    style: whiteTextStyle.copyWith(
+                      fontSize: 18,
+                      fontWeight: medium,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 25),
+                  child: Text(
+                    '**** **** **** ${state.user.cardNumber!.substring(12, 16)}',
+                    style: whiteTextStyle.copyWith(
+                      fontSize: 18,
+                      fontWeight: medium,
+                      letterSpacing: 8,
+                    ),
+                  ),
+                ),
+                Text(
+                  'Balance',
+                  style: whiteTextStyle,
+                ),
+                Text(
+                  formatCurrency(state.user.balance ?? 0),
+                  style: whiteTextStyle.copyWith(
+                    fontSize: 24,
+                    fontWeight: semiBold,
+                  ),
+                ),
+              ],
             ),
-          ),
-          Text(
-            'Balance',
-            style: whiteTextStyle,
-          ),
-          Text(
-            formatCurrency(5000000),
-            style: whiteTextStyle.copyWith(
-              fontSize: 24,
-              fontWeight: semiBold,
-            ),
-          ),
-        ],
-      ),
+          );
+        }
+        return Container();
+      },
     );
   }
 }

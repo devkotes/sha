@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sha/blocs/auth/auth_bloc.dart';
 import 'package:sha/shared/theme.dart';
 
 import 'shared/routes.dart';
@@ -10,24 +12,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: kLightBackgroundColor,
-        appBarTheme: AppBarTheme(
-          backgroundColor: kLightBackgroundColor,
-          elevation: 0,
-          centerTitle: true,
-          iconTheme: IconThemeData(
-            color: kBlackColor,
-          ),
-          titleTextStyle: blackTextStyle.copyWith(
-            fontSize: 20,
-            fontWeight: semiBold,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc()..add(AuthGetCurrentUser()),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: kLightBackgroundColor,
+          appBarTheme: AppBarTheme(
+            backgroundColor: kLightBackgroundColor,
+            elevation: 0,
+            centerTitle: true,
+            iconTheme: IconThemeData(
+              color: kBlackColor,
+            ),
+            titleTextStyle: blackTextStyle.copyWith(
+              fontSize: 20,
+              fontWeight: semiBold,
+            ),
           ),
         ),
+        routes: routes(context),
       ),
-      routes: routes(context),
     );
   }
 }

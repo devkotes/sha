@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sha/blocs/auth/auth_bloc.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
@@ -19,9 +21,19 @@ class TopUpPage extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          const _WalletSection(
-            walletNumber: '8008 2208 1996',
-            walletName: 'Kyunzi Permana',
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return _WalletSection(
+                  walletNumber: state.user.cardNumber!.replaceAllMapped(
+                    RegExp(r".{4}"),
+                    (match) => "${match.group(0)} ",
+                  ),
+                  walletName: '${state.user.name}',
+                );
+              }
+              return Container();
+            },
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 14),

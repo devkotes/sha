@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sha/models/payment_method_model.dart';
+import 'package:sha/models/operator_card_model.dart';
 import 'package:sha/shared/theme.dart';
 
-class ShaCard extends StatelessWidget {
-  final PaymentMethodModel paymentMethod;
+class ShaOperatorCard extends StatelessWidget {
+  final OperatorCardModel operatorCardModel;
   final bool isSelected;
-  const ShaCard({
+  const ShaOperatorCard({
     super.key,
-    required this.paymentMethod,
+    required this.operatorCardModel,
     this.isSelected = false,
   });
 
@@ -24,14 +24,14 @@ class ShaCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.network('${paymentMethod.thumbnail}', height: 30),
+          Image.network('${operatorCardModel.thumbnail}', height: 30),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 4),
                 child: Text(
-                  paymentMethod.name ?? 'unknow',
+                  operatorCardModel.name ?? 'unknow',
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: medium,
@@ -39,7 +39,7 @@ class ShaCard extends StatelessWidget {
                 ),
               ),
               Text(
-                paymentMethod.status ?? 'unknow',
+                operatorCardModel.status ?? 'unknow',
                 style: greyTextStyle.copyWith(fontSize: 12),
               ),
             ],

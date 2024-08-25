@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sha/blocs/auth/auth_bloc.dart';
+import 'package:sha/blocs/tips/tips_bloc.dart';
+import 'package:sha/blocs/transaction/transaction_bloc.dart';
+import 'package:sha/blocs/user/user_bloc.dart';
+import 'package:sha/models/form/form_transfer_model.dart';
 import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/pages/transfer/transfer_amount_page.dart';
 import 'package:sha/ui/widgets/overview/overview_more_item.dart';
 import 'package:sha/ui/widgets/overview/overview_service_item.dart';
 import 'package:sha/ui/widgets/overview/overview_tips_item.dart';
@@ -377,43 +382,32 @@ class _LastTransactionSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               color: kWhiteColor,
             ),
-            child: Column(
-              children: [
-                OverviewTransactionItem(
-                  icon: 'assets/icons/ic_type_topup.png',
-                  title: 'Top Up',
-                  subtitle: 'Yesterday',
-                  value: formatCurrency(450000, symbol: '+ '),
-                ),
-                const SizedBox(height: 18),
-                OverviewTransactionItem(
-                  icon: 'assets/icons/ic_type_cashback.png',
-                  title: 'Cashback',
-                  subtitle: 'Sep 11',
-                  value: formatCurrency(220000, symbol: '- '),
-                ),
-                const SizedBox(height: 18),
-                OverviewTransactionItem(
-                  icon: 'assets/icons/ic_type_withdraw.png',
-                  title: 'Withdraw',
-                  subtitle: 'Sep 2',
-                  value: formatCurrency(4000, symbol: '+ '),
-                ),
-                const SizedBox(height: 18),
-                OverviewTransactionItem(
-                  icon: 'assets/icons/ic_type_transfer.png',
-                  title: 'Transfer',
-                  subtitle: 'Aug 27',
-                  value: formatCurrency(124000, symbol: '- '),
-                ),
-                const SizedBox(height: 18),
-                OverviewTransactionItem(
-                  icon: 'assets/icons/ic_type_electric.png',
-                  title: 'Electric',
-                  subtitle: 'Feb 18',
-                  value: formatCurrency(1230000, symbol: '+ '),
-                ),
-              ],
+            child: BlocProvider(
+              create: (context) => TransactionBloc()..add(TransactionGet()),
+              child: BlocBuilder<TransactionBloc, TransactionState>(
+                builder: (context, state) {
+                  if (state is TransactionLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: kDarkBackgroundColor,
+                      ),
+                    );
+                  }
+
+                  if (state is TransactionSuccess) {
+                    return Column(
+                      children: state.transactions
+                          .map(
+                            (transaction) => OverviewTransactionItem(
+                              transaction: transaction,
+                            ),
+                          )
+                          .toList(),
+                    );
+                  }
+                  return Container();
+                },
+              ),
             ),
           ),
         ],
@@ -440,27 +434,44 @@ class _SendAgainSection extends StatelessWidget {
                   blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
             ),
           ),
-          const SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                OverviewUserItem(
-                  imageUrl: 'assets/images/img_friend_1.png',
-                  username: 'yuanita',
-                ),
-                OverviewUserItem(
-                  imageUrl: 'assets/images/img_friend_2.png',
-                  username: 'jani',
-                ),
-                OverviewUserItem(
-                  imageUrl: 'assets/images/img_friend_3.png',
-                  username: 'urip',
-                ),
-                OverviewUserItem(
-                  imageUrl: 'assets/images/img_friend_4.png',
-                  username: 'masa',
-                )
-              ],
+          BlocProvider(
+            create: (context) => UserBloc()..add(UserGetRecent()),
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserSuccess) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        children: state.users
+                            .map(
+                              (user) => GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TransferAmountPage(
+                                        data: FormTransferModel(
+                                          sendTo: user.username,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: OverviewUserItem(
+                                  user: user,
+                                ),
+                              ),
+                            )
+                            .toList()),
+                  );
+                }
+
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: kDarkBackgroundColor,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -487,32 +498,31 @@ class _FriendlyTips extends StatelessWidget {
                   blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
             ),
           ),
-          const Center(
-            child: Wrap(
-              spacing: 18,
-              runSpacing: 18,
-              children: [
-                OverviewTipsItem(
-                  imageUrl: 'assets/images/img_tips1.png',
-                  title: 'Best tips for using a credit card',
-                  url: 'https://google.com',
-                ),
-                OverviewTipsItem(
-                  imageUrl: 'assets/images/img_tips2.png',
-                  title: 'Spot the good pie of finance model',
-                  url: 'https://google.com',
-                ),
-                OverviewTipsItem(
-                  imageUrl: 'assets/images/img_tips3.png',
-                  title: 'Great hack to get better advices',
-                  url: 'https://google.com',
-                ),
-                OverviewTipsItem(
-                  imageUrl: 'assets/images/img_tips4.png',
-                  title: 'Save more penny buy this instead',
-                  url: 'https://google.com',
-                )
-              ],
+          BlocProvider(
+            create: (context) => TipsBloc()..add(TipsGet()),
+            child: BlocBuilder<TipsBloc, TipsState>(
+              builder: (context, state) {
+                if (state is TipsLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: kDarkBackgroundColor,
+                    ),
+                  );
+                }
+
+                if (state is TipsSuccess) {
+                  return Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 18,
+                      runSpacing: 18,
+                      children: state.tips
+                          .map(
+                            (tip) => OverviewTipsItem(tip: tip),
+                          )
+                          .toList());
+                }
+                return Container();
+              },
             ),
           )
         ],

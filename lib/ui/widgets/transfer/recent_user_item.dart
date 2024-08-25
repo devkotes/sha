@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sha/models/user_model.dart';
 import 'package:sha/shared/theme.dart';
 
 class RecentUserItem extends StatelessWidget {
-  final String imageUrl;
-  final String fullname;
-  final String username;
-  final bool isVerified;
+  final UserModel user;
 
   const RecentUserItem({
     super.key,
-    required this.imageUrl,
-    required this.fullname,
-    required this.username,
-    this.isVerified = false,
+    required this.user,
   });
 
   @override
@@ -33,7 +28,11 @@ class RecentUserItem extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: AssetImage(imageUrl),
+                image: (user.profilePicture != null)
+                    ? NetworkImage(
+                        '${user.profilePicture}',
+                      )
+                    : const AssetImage('assets/images/img_profile.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -45,7 +44,7 @@ class RecentUserItem extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.only(bottom: 2),
                   child: Text(
-                    fullname,
+                    '${user.name}',
                     style: blackTextStyle.copyWith(
                       fontSize: 16,
                       fontWeight: medium,
@@ -53,13 +52,13 @@ class RecentUserItem extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '@$username',
+                  '@${user.username}',
                   style: greyTextStyle.copyWith(fontSize: 12),
                 ),
               ],
             ),
           ),
-          if (isVerified)
+          if (user.verified == 1)
             Row(
               children: [
                 Container(

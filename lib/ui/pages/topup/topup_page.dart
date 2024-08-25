@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sha/blocs/auth/auth_bloc.dart';
-import 'package:sha/shared/routes.dart';
+import 'package:sha/blocs/payment_method/payment_method_bloc.dart';
+import 'package:sha/models/form/form_topup_model.dart';
+import 'package:sha/models/payment_method_model.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/pages/topup/topup_amount_page.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_card.dart';
 
-class TopUpPage extends StatelessWidget {
+class TopUpPage extends StatefulWidget {
   const TopUpPage({super.key});
+
+  @override
+  State<TopUpPage> createState() => _TopUpPageState();
+}
+
+class _TopUpPageState extends State<TopUpPage> {
+  PaymentMethodModel? selectedPaymentMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -45,41 +56,68 @@ class TopUpPage extends StatelessWidget {
               ),
             ),
           ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_bca.png',
-            title: 'BANK BCA',
-            subtitle: '50 mins',
-            isSelected: true,
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_bni.png',
-            title: 'BANK BNI',
-            subtitle: '50 mins',
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_mandiri.png',
-            title: 'BANK Mandiri',
-            subtitle: '50 mins',
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_ocbc.png',
-            title: 'BANK OCBC',
-            subtitle: '50 mins',
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          ShaButton(
-            text: 'Continue',
-            onPressed: () {
-              Navigator.pushNamed(context, topUpAmountRoute);
-            },
-          ),
-          const SizedBox(
-            height: 57,
+          BlocProvider(
+            create: (context) => PaymentMethodBloc()..add(PaymentMethodGet()),
+            child: BlocConsumer<PaymentMethodBloc, PaymentMethodState>(
+              listener: (context, state) {
+                if (state is PaymentMethodFailed) {
+                  showCustomSnackbar(context, state.e);
+                }
+              },
+              builder: (context, state) {
+                if (state is PaymentMethodLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: kBlackColor,
+                    ),
+                  );
+                }
+
+                if (state is PaymentMethodSuccess) {
+                  return Column(
+                      children: state.paymentMethods
+                          .map((paymentMethod) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedPaymentMethod = paymentMethod;
+                                  });
+                                },
+                                child: ShaCard(
+                                  paymentMethod: paymentMethod,
+                                  isSelected: (paymentMethod.id ==
+                                      selectedPaymentMethod?.id),
+                                ),
+                              ))
+                          .toList());
+                }
+
+                return Container();
+              },
+            ),
           ),
         ],
       ),
+      floatingActionButton: (selectedPaymentMethod != null)
+          ? Container(
+              margin: const EdgeInsets.all(24),
+              child: ShaButton(
+                text: 'Continue',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TopupAmountPage(
+                        data: FormTopupModel(
+                          paymentMethodCode: selectedPaymentMethod?.code,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

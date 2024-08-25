@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sha/models/user_model.dart';
 import 'package:sha/shared/theme.dart';
 
 class OverviewUserItem extends StatelessWidget {
-  final String imageUrl;
-  final String username;
+  final UserModel user;
   const OverviewUserItem({
     super.key,
-    required this.imageUrl,
-    required this.username,
+    required this.user,
   });
 
   @override
@@ -28,14 +27,34 @@ class OverviewUserItem extends StatelessWidget {
             height: 45,
             margin: const EdgeInsets.only(bottom: 14),
             decoration: BoxDecoration(
+              shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage(imageUrl),
+                image: (user.profilePicture != null)
+                    ? NetworkImage('${user.profilePicture}')
+                    : const AssetImage('assets/images/img_profile.png'),
               ),
             ),
+            child: (user.verified == 1)
+                ? Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/icons/ic_check.png',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
           ),
           Text(
-            '@$username',
+            '@${user.username}',
             style: blackTextStyle.copyWith(
               fontSize: 12,
               fontWeight: medium,

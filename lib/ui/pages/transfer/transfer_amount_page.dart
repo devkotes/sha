@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:sha/blocs/auth/auth_bloc.dart';
+import 'package:sha/blocs/transfer/transfer_bloc.dart';
+import 'package:sha/models/form/form_transfer_model.dart';
+import 'package:sha/shared/methods.dart';
 import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_text_button.dart';
 
 class TransferAmountPage extends StatefulWidget {
-  const TransferAmountPage({super.key});
+  final FormTransferModel data;
+  const TransferAmountPage({
+    super.key,
+    required this.data,
+  });
 
   @override
   State<TransferAmountPage> createState() => _TransferAmountPageState();
@@ -28,7 +37,7 @@ class _TransferAmountPageState extends State<TransferAmountPage> {
           symbol: '',
         ).format(
           int.parse(
-            text.replaceAll('.', ''),
+            text == '' ? '0' : text.replaceAll('.', ''),
           ),
         ),
       );
@@ -62,164 +71,211 @@ class _TransferAmountPageState extends State<TransferAmountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kDarkBackgroundColor,
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        children: [
-          const SizedBox(height: 40),
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 72),
-              child: Text(
-                'Total Amount',
-                style: whiteTextStyle.copyWith(
-                  fontSize: 20,
-                  fontWeight: semiBold,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            child: SizedBox(
-              width: 200,
-              child: TextFormField(
-                controller: _amountController,
-                enabled: false,
-                style: whiteTextStyle.copyWith(
-                  fontSize: 36,
-                  fontWeight: medium,
-                ),
-                cursorColor: kGreyColor,
-                decoration: InputDecoration(
-                  prefix: Text(
-                    'Rp ',
-                    style: whiteTextStyle.copyWith(
-                      fontSize: 36,
-                      fontWeight: medium,
+      body: BlocProvider(
+        create: (context) => TransferBloc(),
+        child: BlocConsumer<TransferBloc, TransferState>(
+          listener: (context, state) {
+            if (state is TransferFailed) {
+              showCustomSnackbar(context, state.e);
+            }
+
+            if (state is TransferSuccess) {
+              context.read<AuthBloc>().add(
+                    AuthUpdateBalance(
+                      int.parse(
+                            _amountController.text.replaceAll('.', ''),
+                          ) *
+                          -1,
                     ),
-                  ),
-                  disabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: kGreyColor,
-                    ),
-                  ),
+                  );
+
+              Navigator.pushNamedAndRemoveUntil(
+                // ignore: use_build_context_synchronously
+                context,
+                transferSuccessRoute,
+                (route) => false,
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is TransferLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: kLightBackgroundColor,
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 66),
-          Center(
-            child: Wrap(
-              spacing: 40,
-              runSpacing: 40,
+              );
+            }
+
+            return ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
               children: [
-                ShaInputButton(
-                  title: '1',
-                  onTapped: () {
-                    addAmount('1');
-                  },
-                ),
-                ShaInputButton(
-                  title: '2',
-                  onTapped: () {
-                    addAmount('2');
-                  },
-                ),
-                ShaInputButton(
-                  title: '3',
-                  onTapped: () {
-                    addAmount('3');
-                  },
-                ),
-                ShaInputButton(
-                  title: '4',
-                  onTapped: () {
-                    addAmount('4');
-                  },
-                ),
-                ShaInputButton(
-                  title: '5',
-                  onTapped: () {
-                    addAmount('5');
-                  },
-                ),
-                ShaInputButton(
-                  title: '6',
-                  onTapped: () {
-                    addAmount('6');
-                  },
-                ),
-                ShaInputButton(
-                  title: '7',
-                  onTapped: () {
-                    addAmount('7');
-                  },
-                ),
-                ShaInputButton(
-                  title: '8',
-                  onTapped: () {
-                    addAmount('8');
-                  },
-                ),
-                ShaInputButton(
-                  title: '9',
-                  onTapped: () {
-                    addAmount('9');
-                  },
-                ),
-                const SizedBox(
-                  width: 60,
-                  height: 60,
-                ),
-                ShaInputButton(
-                  title: '0',
-                  onTapped: () {
-                    addAmount('0');
-                  },
-                ),
-                GestureDetector(
-                  onTap: () {
-                    deleteAmount();
-                  },
+                const SizedBox(height: 40),
+                Center(
                   child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: kBlackColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: kWhiteColor,
+                    margin: const EdgeInsets.only(bottom: 72),
+                    child: Text(
+                      'Total Amount',
+                      style: whiteTextStyle.copyWith(
+                        fontSize: 20,
+                        fontWeight: semiBold,
                       ),
                     ),
                   ),
-                )
+                ),
+                Align(
+                  child: SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      controller: _amountController,
+                      enabled: false,
+                      style: whiteTextStyle.copyWith(
+                        fontSize: 36,
+                        fontWeight: medium,
+                      ),
+                      cursorColor: kGreyColor,
+                      decoration: InputDecoration(
+                        prefix: Text(
+                          'Rp ',
+                          style: whiteTextStyle.copyWith(
+                            fontSize: 36,
+                            fontWeight: medium,
+                          ),
+                        ),
+                        disabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: kGreyColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 66),
+                Center(
+                  child: Wrap(
+                    spacing: 40,
+                    runSpacing: 40,
+                    children: [
+                      ShaInputButton(
+                        title: '1',
+                        onTapped: () {
+                          addAmount('1');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '2',
+                        onTapped: () {
+                          addAmount('2');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '3',
+                        onTapped: () {
+                          addAmount('3');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '4',
+                        onTapped: () {
+                          addAmount('4');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '5',
+                        onTapped: () {
+                          addAmount('5');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '6',
+                        onTapped: () {
+                          addAmount('6');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '7',
+                        onTapped: () {
+                          addAmount('7');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '8',
+                        onTapped: () {
+                          addAmount('8');
+                        },
+                      ),
+                      ShaInputButton(
+                        title: '9',
+                        onTapped: () {
+                          addAmount('9');
+                        },
+                      ),
+                      const SizedBox(
+                        width: 60,
+                        height: 60,
+                      ),
+                      ShaInputButton(
+                        title: '0',
+                        onTapped: () {
+                          addAmount('0');
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          deleteAmount();
+                        },
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: kBlackColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: kWhiteColor,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 50),
+                ShaButton(
+                  text: 'Continue',
+                  onPressed: () async {
+                    if (await Navigator.pushNamed(context, pinRoute) == true) {
+                      // ignore: use_build_context_synchronously
+                      final authState = context.read<AuthBloc>().state;
+                      String pin = '';
+
+                      if (authState is AuthSuccess) {
+                        pin = authState.user.pin!;
+                      }
+
+                      // ignore: use_build_context_synchronously
+                      context
+                          .read<TransferBloc>()
+                          .add(TransferPost(widget.data.copyWith(
+                            pin: pin,
+                            amount: _amountController.text.replaceAll('.', ''),
+                          )));
+                    }
+                  },
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 25, bottom: 40),
+                  child: ShaTextButton(
+                    text: 'Terms & Conditions',
+                    onPressed: () {},
+                  ),
+                ),
               ],
-            ),
-          ),
-          const SizedBox(height: 50),
-          ShaButton(
-            text: 'Continue',
-            onPressed: () async {
-              if (await Navigator.pushNamed(context, pinRoute) == true) {
-                Navigator.pushNamedAndRemoveUntil(
-                  // ignore: use_build_context_synchronously
-                  context,
-                  transferSuccessRoute,
-                  (route) => false,
-                );
-              }
-            },
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 25, bottom: 40),
-            child: ShaTextButton(
-              text: 'Terms & Conditions',
-              onPressed: () {},
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

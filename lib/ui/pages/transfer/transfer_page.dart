@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sha/shared/routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sha/blocs/user/user_bloc.dart';
+import 'package:sha/models/form/form_transfer_model.dart';
+import 'package:sha/models/user_model.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/pages/transfer/transfer_amount_page.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
 import 'package:sha/ui/widgets/sha_input.dart';
 import 'package:sha/ui/widgets/transfer/recent_user_item.dart';
@@ -14,7 +18,19 @@ class TransferPage extends StatefulWidget {
 }
 
 class _TransferPageState extends State<TransferPage> {
-  final TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController =
+      TextEditingController(text: '');
+
+  UserModel? selectedUser;
+
+  late UserBloc userBloc;
+
+  @override
+  void initState() {
+    userBloc = context.read<UserBloc>()..add(UserGetRecent());
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,99 +56,138 @@ class _TransferPageState extends State<TransferPage> {
             controller: searchController,
             labelText: 'By Username',
             isShowTitle: false,
+            onFieldSubmitted: (value) {
+              if (value.isNotEmpty) {
+                userBloc.add(UserGetByUsername(value));
+              } else {
+                selectedUser = null;
+                userBloc.add(UserGetRecent());
+              }
+              setState(() {});
+            },
           ),
-          // const _RecentUser(),
-          const _ResultUser(),
+          // TODO : CARD USER
+          searchController.text.isEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 40, bottom: 14),
+                      child: Text(
+                        'Recent Users',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 16,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                    ),
+                    BlocBuilder<UserBloc, UserState>(
+                      builder: (context, state) {
+                        if (state is UserSuccess) {
+                          return Column(
+                            children: state.users
+                                .map((user) => GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TransferAmountPage(
+                                              data: FormTransferModel(
+                                                sendTo: user.username,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: RecentUserItem(
+                                        user: user,
+                                      ),
+                                    ))
+                                .toList(),
+                          );
+                        }
+
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: kDarkBackgroundColor,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 40, bottom: 14),
+                      child: Text(
+                        'Result Users',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 16,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                    ),
+                    BlocBuilder<UserBloc, UserState>(
+                      builder: (context, state) {
+                        if (state is UserSuccess) {
+                          return Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 17,
+                            runSpacing: 17,
+                            children: state.users
+                                .map((user) => GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedUser = user;
+                                        });
+                                      },
+                                      child: ResultUserItem(
+                                        user: user,
+                                        isSelected:
+                                            (selectedUser?.id == user.id),
+                                      ),
+                                    ))
+                                .toList(),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: kDarkBackgroundColor,
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    )
+                  ],
+                )
         ],
       ),
-    );
-  }
-}
-
-class _RecentUser extends StatelessWidget {
-  const _RecentUser();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 40, bottom: 14),
-          child: Text(
-            'Recent Users',
-            style: blackTextStyle.copyWith(
-              fontSize: 16,
-              fontWeight: semiBold,
-            ),
-          ),
-        ),
-        const RecentUserItem(
-          imageUrl: 'assets/images/img_friend_1.png',
-          fullname: 'Yonna Jie',
-          username: 'yoenna',
-          isVerified: true,
-        ),
-        const RecentUserItem(
-          imageUrl: 'assets/images/img_friend_3.png',
-          fullname: 'John Hi',
-          username: 'jhi',
-        ),
-        const RecentUserItem(
-          imageUrl: 'assets/images/img_friend_4.png',
-          fullname: 'Masayoshi',
-          username: 'form',
-        ),
-      ],
-    );
-  }
-}
-
-class _ResultUser extends StatelessWidget {
-  const _ResultUser();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 40, bottom: 14),
-          child: Text(
-            'Recent Users',
-            style: blackTextStyle.copyWith(
-              fontSize: 16,
-              fontWeight: semiBold,
-            ),
-          ),
-        ),
-        const Wrap(
-          spacing: 17,
-          runSpacing: 17,
-          children: [
-            ResultUserItem(
-              imageUrl: 'assets/images/img_friend_1.png',
-              fullname: 'Yonna Jie',
-              username: 'yoenna',
-              isVerified: true,
-            ),
-            ResultUserItem(
-              imageUrl: 'assets/images/img_friend_4.png',
-              fullname: 'Yonne Ka',
-              username: 'yoenyu',
-              isSelected: true,
-            ),
-          ],
-        ),
-        const SizedBox(height: 200),
-        ShaButton(
-          text: 'Continue',
-          onPressed: () {
-            Navigator.pushNamed(context, transferAmountRoute);
-          },
-        ),
-        const SizedBox(height: 50),
-      ],
+      floatingActionButton: (selectedUser != null)
+          ? Container(
+              margin: const EdgeInsets.all(24),
+              child: ShaButton(
+                text: 'Continue',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TransferAmountPage(
+                        data: FormTransferModel(
+                          sendTo: selectedUser?.username,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          : Container(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

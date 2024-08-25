@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sha/blocs/auth/auth_bloc.dart';
+import 'package:sha/blocs/operator_card/operator_card_bloc.dart';
+import 'package:sha/models/operator_card_model.dart';
 import 'package:sha/shared/methods.dart';
-import 'package:sha/shared/routes.dart';
 import 'package:sha/shared/theme.dart';
+import 'package:sha/ui/pages/data/data_package_page.dart';
 import 'package:sha/ui/widgets/sha_button.dart';
-import 'package:sha/ui/widgets/sha_card.dart';
+import 'package:sha/ui/widgets/sha_data_card.dart';
 
-class DataProviderPage extends StatelessWidget {
+class DataProviderPage extends StatefulWidget {
   const DataProviderPage({super.key});
+
+  @override
+  State<DataProviderPage> createState() => _DataProviderPageState();
+}
+
+class _DataProviderPageState extends State<DataProviderPage> {
+  OperatorCardModel? selectedOperator;
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +31,20 @@ class DataProviderPage extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          _WalletSection(
-            walletNumber: '8008 2208 1996',
-            walletName: 'Balance: ${formatCurrency(12000000)}',
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return _WalletSection(
+                  walletNumber: state.user.cardNumber!.replaceAllMapped(
+                    RegExp(r".{4}"),
+                    (match) => "${match.group(0)} ",
+                  ),
+                  walletName:
+                      'Balance: ${formatCurrency(state.user.balance ?? 0)}',
+                );
+              }
+              return Container();
+            },
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 14),
@@ -34,36 +56,57 @@ class DataProviderPage extends StatelessWidget {
               ),
             ),
           ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_telkomsel.png',
-            title: 'Telkomsel',
-            subtitle: 'Available',
-            isSelected: true,
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_indosat.png',
-            title: 'Indosat',
-            subtitle: 'Available',
-          ),
-          const ShaCard(
-            imageUrl: 'assets/images/img_singtel.png',
-            title: 'Singtel ID',
-            subtitle: 'Available',
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          ShaButton(
-            text: 'Continue',
-            onPressed: () {
-              Navigator.pushNamed(context, dataPackageRoute);
-            },
-          ),
-          const SizedBox(
-            height: 57,
+          BlocProvider(
+            create: (context) => OperatorCardBloc()..add(OperatorCardGet()),
+            child: BlocBuilder<OperatorCardBloc, OperatorCardState>(
+              builder: (context, state) {
+                if (state is OperatorCardSuccess) {
+                  return Column(
+                    children: state.operatorCards
+                        .map(
+                          (operator) => GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedOperator = operator;
+                              });
+                            },
+                            child: ShaOperatorCard(
+                              operatorCardModel: operator,
+                              isSelected: (selectedOperator?.id == operator.id),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: kDarkBackgroundColor,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
+      floatingActionButton: (selectedOperator != null)
+          ? Container(
+              margin: const EdgeInsets.all(24),
+              child: ShaButton(
+                text: 'Continue',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DataPackagePage(operatorCard: selectedOperator!),
+                    ),
+                  );
+                },
+              ),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

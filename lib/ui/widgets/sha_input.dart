@@ -10,6 +10,7 @@ class ShaInput extends StatelessWidget {
   final bool isShowTitle;
   final TextInputType keyboardType;
   final TextInputAction keyboardAction;
+  final Function(String)? onFieldSubmitted;
   const ShaInput({
     super.key,
     required this.controller,
@@ -19,6 +20,7 @@ class ShaInput extends StatelessWidget {
     this.isShowTitle = true,
     this.keyboardType = TextInputType.text,
     this.keyboardAction = TextInputAction.next,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -70,6 +72,7 @@ class ShaInput extends StatelessWidget {
             ),
             contentPadding: const EdgeInsets.all(12),
           ),
+          onFieldSubmitted: onFieldSubmitted,
         ),
         const SizedBox(height: 16)
       ],

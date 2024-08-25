@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sha/blocs/auth/auth_bloc.dart';
+import 'package:sha/blocs/user/user_bloc.dart';
 import 'package:sha/shared/theme.dart';
 
 import 'shared/routes.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => AuthBloc()..add(AuthGetCurrentUser()),
+        ),
+        BlocProvider(
+          create: (context) => UserBloc(),
         ),
       ],
       child: MaterialApp(

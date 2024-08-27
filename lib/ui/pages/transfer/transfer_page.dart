@@ -66,7 +66,6 @@ class _TransferPageState extends State<TransferPage> {
               setState(() {});
             },
           ),
-          // TODO : CARD USER
           searchController.text.isEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
